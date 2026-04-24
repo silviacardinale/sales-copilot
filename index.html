@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Doofinder Sales Copilot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app" id="app">
+
+    <header class="topbar">
+      <div class="logo">
+        <div class="logo-mark">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <circle cx="9" cy="9" r="7" stroke="white" stroke-width="1.5"/>
+            <circle cx="9" cy="9" r="3" fill="#4CAF50"/>
+            <path d="M9 2v2M9 14v2M2 9h2M14 9h2" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="logo-text">Sales Copilot</span>
+        <span class="logo-by">by Doofinder</span>
+      </div>
+      <div class="topbar-center">
+        <div class="call-indicator">
+          <span class="call-dot"></span>
+          <span id="call-timer">00:00</span>
+          <span>En llamada</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="client-chip" id="client-chip" style="display:none">
+          <span id="chip-icon"></span>
+          <span id="chip-url"></span>
+        </div>
+        <button class="btn-icon" onclick="resetSession()" title="Nueva llamada">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <path d="M2 7A5 5 0 1 0 3.5 3.2"/><path d="M2 3v4h4"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="sidebar">
+      <div class="sidebar-top">
+        <div class="sidebar-label">Onboarding</div>
+        <div class="step-list">
+          <button class="step-btn active" id="sbtn-0" onclick="goStep(0)">
+            <div class="step-circle" id="sc-0">1</div>
+            <div class="step-info">
+              <div class="step-name">Detección</div>
+              <div class="step-desc">URL y plataforma</div>
+            </div>
+          </button>
+          <div class="step-connector"></div>
+          <button class="step-btn" id="sbtn-1" onclick="goStep(1)">
+            <div class="step-circle" id="sc-1">2</div>
+            <div class="step-info">
+              <div class="step-name">Alta de cuenta</div>
+              <div class="step-desc">Admin panel</div>
+            </div>
+          </button>
+          <div class="step-connector"></div>
+          <button class="step-btn" id="sbtn-2" onclick="goStep(2)">
+            <div class="step-circle" id="sc-2">3</div>
+            <div class="step-info">
+              <div class="step-name">Instalación</div>
+              <div class="step-desc">Plugin o script</div>
+            </div>
+          </button>
+          <div class="step-connector"></div>
+          <button class="step-btn" id="sbtn-3" onclick="goStep(3)">
+            <div class="step-circle" id="sc-3">4</div>
+            <div class="step-info">
+              <div class="step-name">Verificación</div>
+              <div class="step-desc">Comprobar funcionamiento</div>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <div class="sidebar-bottom">
+        <div class="sidebar-label">Herramientas</div>
+        <button class="tool-btn" id="tbtn-troubleshoot" onclick="goView('troubleshoot')">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><circle cx="7" cy="7" r="5"/><path d="M7 5v4M7 4h.01"/></svg>
+          Asistente IA
+        </button>
+        <button class="tool-btn" id="tbtn-glossary" onclick="goView('glossary')">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><rect x="2" y="1" width="10" height="12" rx="1"/><path d="M4 4h6M4 7h6M4 10h4"/></svg>
+          Conceptos clave
+        </button>
+        <button class="tool-btn intercom-btn" id="tbtn-ticket" onclick="goView('ticket')">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" fill="#1F8EED"/><path d="M4 5.5C4 5 4.5 4.5 7 4.5s3 .5 3 1v3c0 .5-.5 1-3 1S4 9 4 8.5v-3z" fill="white"/><circle cx="5.5" cy="7" r=".6" fill="#1F8EED"/><circle cx="7" cy="7" r=".6" fill="#1F8EED"/><circle cx="8.5" cy="7" r=".6" fill="#1F8EED"/></svg>
+          Escalar a soporte
+        </button>
+      </div>
+    </nav>
+
+    <main class="main" id="main">
+
+      <!-- VIEW: Deteccion -->
+      <div class="view active" id="view-0">
+        <div class="view-header">
+          <div>
+            <h1 class="view-title">Detección del cliente</h1>
+            <p class="view-subtitle">Introduce la URL de la tienda para detectar plataforma, versiones e integraciones</p>
+          </div>
+        </div>
+        <div class="view-body">
+          <div class="detect-box">
+            <div class="detect-input-row">
+              <div class="url-input-wrap">
+                <svg class="url-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="8" cy="8" r="6"/><path d="M2 8h12M8 2c-2 0-3.5 2.7-3.5 6S6 14 8 14s3.5-2.7 3.5-6S10 2 8 2z"/></svg>
+                <input type="text" id="url-input" class="url-input" placeholder="https://tienda-del-cliente.com" autocomplete="off" onkeydown="if(event.key==='Enter') detectSite()" />
+              </div>
+              <button class="btn-detect" onclick="detectSite()" id="detect-btn">Analizar</button>
+            </div>
+            <div class="detect-hint">Detectamos: plataforma ecommerce, versión del módulo, si Doofinder ya está instalado, y herramientas de soporte activas</div>
+          </div>
+
+          <div id="detect-loading" style="display:none" class="detect-loading">
+            <div class="spinner"></div>
+            <div class="loading-text">Analizando <span id="loading-url"></span></div>
+          </div>
+
+          <div id="detect-error" style="display:none" class="detect-error"></div>
+
+          <div id="detect-results" style="display:none">
+            <div class="results-grid">
+              <div class="result-card" id="r-platform">
+                <div class="result-card-label">Plataforma</div>
+                <div id="r-platform-content"></div>
+              </div>
+              <div class="result-card" id="r-doofinder">
+                <div class="result-card-label">Doofinder</div>
+                <div id="r-doofinder-content"></div>
+              </div>
+              <div class="result-card" id="r-support">
+                <div class="result-card-label">Chat de soporte</div>
+                <div id="r-support-content"></div>
+              </div>
+              <div class="result-card" id="r-meta">
+                <div class="result-card-label">Info del sitio</div>
+                <div id="r-meta-content"></div>
+              </div>
+            </div>
+            <button class="btn-primary btn-continue" onclick="goStep(1); updateStepStatus(0,'done')">Continuar con este cliente →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW: Alta -->
+      <div class="view" id="view-1">
+        <div class="view-header">
+          <div>
+            <h1 class="view-title">Alta de cuenta en Doofinder</h1>
+            <p class="view-subtitle">El cliente debe tener acceso al admin panel antes de continuar</p>
+          </div>
+          <span class="step-badge">Paso 2</span>
+        </div>
+        <div class="view-body">
+          <a href="https://admin.doofinder.com" target="_blank" class="ext-link-card">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9" stroke-linecap="round"/><path d="M10 2h4v4M14 2l-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            admin.doofinder.com
+            <span class="ext-hint">↗ Abrir</span>
+          </a>
+
+          <div class="checklist-section">
+            <div class="section-label">Checklist</div>
+            <div class="checklist">
+              <label class="check-item"><input type="checkbox" class="chk"/><span>El cliente ha creado la cuenta o recibido la invitación</span></label>
+              <label class="check-item"><input type="checkbox" class="chk"/><span>Ha iniciado sesión en admin.doofinder.com</span></label>
+              <label class="check-item"><input type="checkbox" class="chk"/><span>Plan trial de 30 días activo</span></label>
+              <label class="check-item"><input type="checkbox" class="chk"/><span>Tiene acceso al panel de administración</span></label>
+            </div>
+          </div>
+
+          <div class="callout callout-info">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="7" cy="7" r="5"/><path d="M7 5v4M7 4h.01" stroke-linecap="round"/></svg>
+            Si el cliente no recibe el correo, revisar spam. El remitente es <strong>no-reply@doofinder.com</strong>
+          </div>
+
+          <div class="nav-btns">
+            <button class="btn-secondary" onclick="goStep(0)">← Atrás</button>
+            <button class="btn-primary" onclick="goStep(2); updateStepStatus(1,'done')">Cuenta creada → continuar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW: Instalacion -->
+      <div class="view" id="view-2">
+        <div class="view-header">
+          <div>
+            <h1 class="view-title">Instalación</h1>
+            <p class="view-subtitle" id="install-subtitle">Instrucciones adaptadas a la plataforma</p>
+          </div>
+          <span class="step-badge">Paso 3</span>
+        </div>
+        <div class="view-body" id="install-body">
+          <div id="platform-selector">
+            <div class="section-label">Plataforma del cliente</div>
+            <div class="platform-grid">
+              <button class="platform-btn" onclick="setPlatform('Shopify','plugin')">🛍 Shopify</button>
+              <button class="platform-btn" onclick="setPlatform('WooCommerce','plugin')">🔌 WooCommerce</button>
+              <button class="platform-btn" onclick="setPlatform('PrestaShop','plugin')">🐙 PrestaShop</button>
+              <button class="platform-btn" onclick="setPlatform('Magento','plugin')">🔶 Magento</button>
+              <button class="platform-btn" onclick="setPlatform('BigCommerce','plugin')">🏪 BigCommerce</button>
+              <button class="platform-btn" onclick="setPlatform('Shopware','plugin')">⚡ Shopware</button>
+              <button class="platform-btn" onclick="setPlatform('VTEX','plugin')">🇧🇷 VTEX</button>
+              <button class="platform-btn" onclick="setPlatform('JTL','plugin')">📦 JTL</button>
+              <button class="platform-btn" onclick="setPlatform('Wix','script')">🌐 Wix</button>
+              <button class="platform-btn" onclick="setPlatform('Squarespace','script')">◼ Squarespace</button>
+              <button class="platform-btn" onclick="setPlatform('Otra','script')">💻 Otra / Custom</button>
+            </div>
+          </div>
+          <div id="install-guide" style="display:none"></div>
+        </div>
+      </div>
+
+      <!-- VIEW: Verificacion -->
+      <div class="view" id="view-3">
+        <div class="view-header">
+          <div>
+            <h1 class="view-title">Verificar funcionamiento</h1>
+            <p class="view-subtitle">Comprueba con el cliente que la instalación es correcta</p>
+          </div>
+          <span class="step-badge">Paso 4</span>
+        </div>
+        <div class="view-body">
+          <div class="checklist-section">
+            <div class="section-label">Checklist de verificación</div>
+            <div class="checklist">
+              <label class="check-item"><input type="checkbox" class="chk"/><span>El cliente ve el buscador de Doofinder en su web (layer flotante al escribir)</span></label>
+              <label class="check-item"><input type="checkbox" class="chk"/><span>Al escribir aparecen resultados con productos reales</span></label>
+              <label class="check-item"><input type="checkbox" class="chk"/><span>Los productos muestran imagen, nombre y precio correctos</span></label>
+              <label class="check-item"><input type="checkbox" class="chk"/><span>En el Admin Panel → Search Engine, el índice muestra > 0 productos indexados</span></label>
+              <label class="check-item"><input type="checkbox" class="chk"/><span>El script aparece en el código fuente: <kbd>Ctrl+U</kbd>, buscar "doofinder"</span></label>
+            </div>
+          </div>
+          <div id="verify-success" style="display:none" class="callout callout-success">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M4.5 7l2 2 3-3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            ¡Instalación completada con éxito! El cliente ya tiene Doofinder activo en su tienda.
+          </div>
+          <div class="nav-btns">
+            <button class="btn-secondary" onclick="goStep(2)">← Atrás</button>
+            <button class="btn-primary" onclick="document.getElementById('verify-success').style.display='flex'">Todo correcto ✓</button>
+            <button class="btn-warn" onclick="goView('troubleshoot')">Hay un problema</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW: Troubleshoot -->
+      <div class="view" id="view-troubleshoot">
+        <div class="view-header">
+          <div>
+            <h1 class="view-title">Asistente de troubleshooting</h1>
+            <p class="view-subtitle">IA especializada en instalaciones de Doofinder. Respuestas mientras hablas con el cliente.</p>
+          </div>
+          <div class="ai-badge">IA</div>
+        </div>
+        <div class="chat-container">
+          <div class="chat-messages" id="chat-messages">
+            <div class="chat-welcome">
+              <div class="welcome-icon">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="14" cy="14" r="11"/><circle cx="14" cy="14" r="5" fill="currentColor" opacity=".15"/><path d="M14 3v3M14 22v3M3 14h3M22 14h3" stroke-linecap="round"/></svg>
+              </div>
+              <p>Asistente listo. Describe el problema o usa los accesos rápidos.</p>
+            </div>
+          </div>
+          <div class="quick-actions" id="quick-actions">
+            <button class="quick-btn" onclick="quickSend('El layer de búsqueda no aparece en la web del cliente')">Layer no aparece</button>
+            <button class="quick-btn" onclick="quickSend('La indexación da error o no avanza')">Error de indexación</button>
+            <button class="quick-btn" onclick="quickSend('Los precios en los resultados son incorrectos')">Precios incorrectos</button>
+            <button class="quick-btn" onclick="quickSend('El script está puesto pero el buscador no se activa')">Script no activa</button>
+            <button class="quick-btn" onclick="quickSend('¿Cuánto tarda en indexarse el catálogo completo?')">Tiempo de indexación</button>
+            <button class="quick-btn" onclick="quickSend('¿Cómo encuentro el Store ID y el script en el admin panel?')">Encontrar el script</button>
+          </div>
+          <div class="chat-input-bar">
+            <textarea id="chat-input" class="chat-input" placeholder="Describe el problema… (Enter para enviar)" rows="1" onkeydown="handleChatKey(event)" oninput="autoResize(this)"></textarea>
+            <button class="btn-send" id="btn-send" onclick="sendChat()">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 14L14 8 2 2v4.5l8 1.5-8 1.5V14z" fill="white"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW: Glossary -->
+      <div class="view" id="view-glossary">
+        <div class="view-header">
+          <div>
+            <h1 class="view-title">Conceptos clave</h1>
+            <p class="view-subtitle">Para entender y explicarle Doofinder al cliente durante la llamada</p>
+          </div>
+        </div>
+        <div class="view-body">
+          <div class="glossary-grid">
+            <div class="glossary-card"><div class="glossary-term">Store</div><div class="glossary-def">Representa el sitio web del cliente en Doofinder. Una cuenta puede tener varias stores para distintos países o idiomas.</div></div>
+            <div class="glossary-card"><div class="glossary-term">Search Engine</div><div class="glossary-def">Motor de búsqueda que indexa el catálogo. Puede haber varios por idioma o tipo de catálogo dentro de la misma Store.</div></div>
+            <div class="glossary-card"><div class="glossary-term">Data Feed</div><div class="glossary-def">Archivo XML, CSV o JSON con todos los productos. Doofinder lo lee periódicamente para mantener el catálogo actualizado.</div></div>
+            <div class="glossary-card"><div class="glossary-term">Indexación</div><div class="glossary-def">Proceso por el que Doofinder lee el feed y guarda los productos. La primera puede tardar varios minutos según el tamaño del catálogo.</div></div>
+            <div class="glossary-card"><div class="glossary-term">Layer</div><div class="glossary-def">Widget visual que aparece superpuesto en la web cuando alguien escribe en el buscador. Muestra resultados en tiempo real.</div></div>
+            <div class="glossary-card"><div class="glossary-term">Script de instalación</div><div class="glossary-def">Una única línea de JavaScript que conecta la tienda con Doofinder. Va en el header o footer de todas las páginas.</div></div>
+            <div class="glossary-card"><div class="glossary-term">CSS Selector</div><div class="glossary-def">Indica a Doofinder dónde está el buscador. Ej: <code>#search</code>, <code>input[name="q"]</code>, <code>.search-input</code></div></div>
+            <div class="glossary-card"><div class="glossary-term">Plugin vs Script manual</div><div class="glossary-def">El plugin (Shopify, WooCommerce…) automatiza todo: feed, script, selector. El script manual requiere pegar el código en el HTML.</div></div>
+          </div>
+          <div class="script-example-section">
+            <div class="section-label">Script de instalación</div>
+            <div class="code-block">
+              <code id="script-example">&lt;script src="https://eu1-config.doofinder.com/2.x/STORE_ID.js" async&gt;&lt;/script&gt;</code>
+              <button class="copy-btn" onclick="copyScript()">Copiar</button>
+            </div>
+            <div class="code-legend">
+              <span><strong>eu1</strong> = Europa</span>
+              <span><strong>us1</strong> = América</span>
+              <span><strong>ap1</strong> = Asia</span>
+              <span class="sep">·</span>
+              <span>STORE_ID en Admin Panel → Configuración → Store Settings</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW: Ticket -->
+      <div class="view" id="view-ticket">
+        <div class="view-header">
+          <div>
+            <h1 class="view-title">Escalar a soporte</h1>
+            <p class="view-subtitle">Para cuando el problema no se puede resolver en la llamada</p>
+          </div>
+          <div class="intercom-badge">via Intercom</div>
+        </div>
+        <div class="view-body">
+          <div class="callout callout-warn">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M7 2l5 9H2l5-9z"/><path d="M7 6v2M7 9.5h.01" stroke-linecap="round"/></svg>
+            Primero prueba el <strong>asistente de troubleshooting IA</strong>. Solo escala si no se puede resolver en la llamada. El soporte responde en 24-48h.
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Plataforma del cliente</label>
+              <input class="form-input" id="t-platform" type="text" placeholder="ej: WooCommerce 8.2, Shopify Plus, custom…"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">URL de la tienda</label>
+              <input class="form-input" id="t-url" type="text" placeholder="https://tienda-cliente.com"/>
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Descripción del problema</label>
+              <textarea class="form-input form-textarea" id="t-problem" placeholder="¿Qué pasa exactamente? ¿Qué ve el cliente?"></textarea>
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Pasos de troubleshooting ya realizados</label>
+              <textarea class="form-input form-textarea" id="t-steps" placeholder="Lista los pasos que ya habéis probado…" style="min-height:72px"></textarea>
+            </div>
+          </div>
+          <button class="btn-primary" onclick="generateTicket()">Generar resumen para Intercom</button>
+          <div id="ticket-output" style="display:none;margin-top:16px">
+            <div class="section-label">Pega esto en Intercom</div>
+            <div class="ticket-preview" id="ticket-preview"></div>
+            <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
+              <button class="btn-secondary" onclick="copyTicket()">Copiar al portapapeles</button>
+              <span class="callout-inline callout-info">Se requiere intervención de soporte técnico</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
